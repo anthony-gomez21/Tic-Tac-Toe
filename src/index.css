@@ -146,3 +146,9 @@ body {
 .ScoreO {
   user-select: none;
 }
+
+@media (max-width: 450px) {
+  .score {
+    font-size: 40px;
+  }
+}
