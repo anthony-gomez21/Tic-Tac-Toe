@@ -13,6 +13,7 @@ import {
   scoreStorage,
 } from './logic/storage';
 import Score from './components/Score.jsx';
+import ChooseTurn from './components/ChooseTurn.jsx';
 
 function App() {
   // ================ ESTADO DE BOARD ====================
@@ -53,6 +54,10 @@ function App() {
       O: 0,
     };
   });
+
+  // ================ ESTADO DE GAME STARTED ====================
+
+  const [gameStarted, setGameStarted] = useState(true);
 
   // ================ RESETEAR JUEGO ====================
 
@@ -129,30 +134,51 @@ function App() {
     }
   };
 
+  // ============ DECIDIR TURNO ===========
+
+  const handleButtonClick = (event) => {
+    const buttonValue = event.target.textContent;
+
+    if (buttonValue === TURNS.X || buttonValue === TURNS.O) {
+      setTurn(buttonValue);
+      setGameStarted(!gameStarted);
+    }
+  };
+
   return (
-    <main className="board">
-      <h1>Tic Tac Toe</h1>
+    <div>
+      {gameStarted ? (
+        <ChooseTurn handleButtonClick={handleButtonClick} />
+      ) : (
+        <main className="board">
+          <h1>Tic Tac Toe</h1>
 
-      <button onClick={resetGame}>Reset del juego</button>
+          <button onClick={resetGame}>Reset to game</button>
 
-      <section className="game">
-        {board.map((square, index) => {
-          return (
-            <Square key={index} index={index} updateBoard={updateBoard}>
-              {square}
-            </Square>
-          );
-        })}
-      </section>
-      <section className="turn">
-        <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
-        <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
-      </section>
+          <button onClick={() => setGameStarted(!gameStarted)}>
+            Choose turn
+          </button>
 
-      <WinnerModal resetGame={resetGame} winner={winner} />
+          <section className="game">
+            {board.map((square, index) => {
+              return (
+                <Square key={index} index={index} updateBoard={updateBoard}>
+                  {square}
+                </Square>
+              );
+            })}
+          </section>
+          <section className="turn">
+            <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
+            <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
+          </section>
 
-      <Score score={score} resetScore={resetScore} />
-    </main>
+          <WinnerModal resetGame={resetGame} winner={winner} />
+
+          <Score score={score} resetScore={resetScore} />
+        </main>
+      )}
+    </div>
   );
 }
 
